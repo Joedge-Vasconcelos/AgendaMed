@@ -24,48 +24,43 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
       email: 'thiago@paciente.com.br',
       role: 'PATIENT' as UserRole,
       avatar: 'https://i.pravatar.cc/150?u=thiago'
-    },
-    samara: {
-      name: 'Dra. Samara Lima',
-      email: 'samara@acheimed.com.br',
-      role: 'PHYSICIAN' as UserRole,
-      avatar: 'https://i.pravatar.cc/150?u=samara'
     }
   };
 
-  const handlePasswordlessLogin = (personaKey: keyof typeof demoPersonas) => {
+  const handleQuickAccess = (persona: 'arlindo' | 'thiago') => {
     setIsLoading(true);
     setTimeout(() => {
-      const persona = demoPersonas[personaKey];
       onAuthSuccess({
-        id: personaKey,
-        ...persona
+        id: persona === 'arlindo' ? 'm1' : 'p1',
+        ...demoPersonas[persona]
       });
       setIsLoading(false);
-    }, 800);
+    }, 600);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate real login
+    // Simulação de login real com credenciais
     setTimeout(() => {
+      const isManausPhysician = formData.email.includes('arlindo') || formData.email.includes('samara');
+      const isManausPatient = formData.email.includes('thiago') || formData.email.includes('maria');
+
       const mockUser: User = {
         id: Math.random().toString(36).substr(2, 9),
-        name: formData.name || (role === 'PHYSICIAN' ? 'Dr. Arlindo Jr.' : 'Paciente Manaus'),
+        name: formData.name || (isManausPhysician ? 'Dr. Arlindo Jr.' : 'Paciente Manaus'),
         email: formData.email,
-        role: role,
+        role: isManausPhysician ? 'PHYSICIAN' : 'PATIENT',
         avatar: undefined
       };
       setIsLoading(false);
       onAuthSuccess(mockUser);
-    }, 1200);
+    }, 1000);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-50">
-      {/* Decorative Blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-1/2 h-1/2 bg-babyBlue/30 rounded-full blur-[120px] animate-pulse"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-1/2 h-1/2 bg-aqua/30 rounded-full blur-[120px] animate-pulse"></div>
 
@@ -75,35 +70,11 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             AM
           </div>
           <h1 className="text-4xl font-display font-bold text-slate-900 tracking-tight">Achei Med</h1>
-          <p className="text-slate-500 font-medium mt-2">Manaus: Central de Inteligência Médica</p>
+          <p className="text-slate-500 font-medium mt-2">Manaus: Central de Saúde Inteligente</p>
         </div>
 
-        <div className="flex p-1.5 bg-slate-100 rounded-2xl mb-8">
-          {(['PATIENT', 'PHYSICIAN', 'ATTENDANT'] as UserRole[]).map((r) => (
-            <button
-              key={r}
-              onClick={() => setRole(r)}
-              className={`flex-1 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all ${role === r ? 'bg-white text-deepAqua shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-            >
-              {r === 'PATIENT' ? 'Paciente' : r === 'PHYSICIAN' ? 'Médico' : 'Atendente'}
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-2">Nome Completo</label>
-              <input 
-                required
-                type="text" 
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="Ex: Maria Solimões"
-                className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 transition-all outline-none"
-              />
-            </div>
-          )}
+        {/* LOGIN FORM */}
+        <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           <div className="space-y-1">
             <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-2">E-mail</label>
             <input 
@@ -112,21 +83,18 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               placeholder="exemplo@manaus.com.br"
-              className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 transition-all outline-none"
+              className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 outline-none transition-all"
             />
           </div>
           <div className="space-y-1">
-            <div className="flex justify-between px-2">
-               <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Senha</label>
-               {isLogin && <button type="button" className="text-[10px] font-black uppercase text-deepAqua hover:underline tracking-widest">Esqueci a senha</button>}
-            </div>
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest px-2">Senha</label>
             <input 
               required
               type="password" 
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               placeholder="••••••••"
-              className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 transition-all outline-none"
+              className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 outline-none transition-all"
             />
           </div>
 
@@ -135,35 +103,46 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             disabled={isLoading}
             className="w-full neo-gradient py-4 rounded-2xl font-bold text-white shadow-xl shadow-babyBlue/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
           >
-            {isLoading ? <div className="loader !border-white !border-t-transparent"></div> : (isLogin ? 'Acessar Plataforma' : 'Criar Conta')}
+            {isLoading ? <div className="loader !border-white !border-t-transparent"></div> : 'Entrar Agora'}
           </button>
         </form>
 
-        <div className="mt-8 pt-8 border-t border-slate-100">
-          <p className="text-center text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Acesso Rápido (Sem Senha)</p>
-          <div className="grid grid-cols-2 gap-3">
+        {/* QUICK ACCESS BUTTONS (PASSWORDLESS) */}
+        <div className="pt-8 border-t border-slate-100">
+          <p className="text-center text-[10px] font-black uppercase text-slate-400 tracking-widest mb-6">Acesso Rápido (Somente Testes)</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button 
-              onClick={() => handlePasswordlessLogin('arlindo')}
-              className="py-3 px-4 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+              onClick={() => handleQuickAccess('arlindo')}
+              className="group p-5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-xl hover:-translate-y-1"
             >
-              <span>Médico (Dr. Arlindo)</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl">👨‍⚕️</div>
+                <div className="text-left">
+                  <p className="text-xs font-bold leading-none">Ambiente Médico</p>
+                  <p className="text-[9px] text-white/40 uppercase tracking-widest mt-1">Dr. Arlindo (Manaus)</p>
+                </div>
+              </div>
             </button>
+
             <button 
-              onClick={() => handlePasswordlessLogin('thiago')}
-              className="py-3 px-4 rounded-xl border border-slate-200 text-slate-600 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+              onClick={() => handleQuickAccess('thiago')}
+              className="group p-5 rounded-2xl bg-white border border-slate-200 hover:border-aqua text-slate-900 transition-all shadow-lg hover:-translate-y-1"
             >
-              <span>Paciente (Thiago)</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-babyBlue/20 flex items-center justify-center text-xl">👤</div>
+                <div className="text-left">
+                  <p className="text-xs font-bold leading-none">Ambiente Paciente</p>
+                  <p className="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Thiago (Manaus)</p>
+                </div>
+              </div>
             </button>
           </div>
         </div>
 
-        <div className="mt-6 text-center">
-          <button 
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-[11px] font-black uppercase text-slate-400 hover:text-deepAqua tracking-widest transition-colors"
-          >
-            {isLogin ? 'Não tem uma conta? Solicite Acesso' : 'Já possui conta? Faça Login'}
-          </button>
+        <div className="mt-8 text-center">
+          <p className="text-[11px] text-slate-400 font-medium">
+            Sistema de demonstração Achei Med © 2024
+          </p>
         </div>
       </div>
     </div>

@@ -12,13 +12,19 @@ const App: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // Authentication persistence simulation
   useEffect(() => {
-    const saved = localStorage.getItem('achei_med_user');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setUser(parsed);
-      setView('DASHBOARD');
+    try {
+      const saved = localStorage.getItem('achei_med_user');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id) {
+          setUser(parsed);
+          setView('DASHBOARD');
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao carregar sessão:", e);
+      localStorage.removeItem('achei_med_user');
     }
   }, []);
 
@@ -26,11 +32,12 @@ const App: React.FC = () => {
     setUser(loggedUser);
     localStorage.setItem('achei_med_user', JSON.stringify(loggedUser));
     setView('DASHBOARD');
+    
     addNotification({
       id: Math.random().toString(),
       userId: loggedUser.id,
-      title: 'Bem-vindo de volta!',
-      message: `Olá ${loggedUser.name}, sua central de saúde está pronta.`,
+      title: 'Acesso Autorizado',
+      message: `Bem-vindo ao ambiente de ${loggedUser.role === 'PHYSICIAN' ? 'Médico' : 'Paciente'} em Manaus.`,
       type: 'SUCCESS',
       read: false,
       createdAt: Date.now()
@@ -52,7 +59,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface selection:bg-aqua selection:text-deepAqua">
+    <div className="min-h-screen bg-slate-50 selection:bg-aqua selection:text-deepAqua">
       {view !== 'AUTH' && user && (
         <Header 
           user={user} 
@@ -67,8 +74,8 @@ const App: React.FC = () => {
         {view === 'AUTH' ? (
           <AuthView onAuthSuccess={handleLogin} />
         ) : (
-          <DashboardContainer 
-            user={user!} 
+          user && <DashboardContainer 
+            user={user} 
             view={view} 
             setView={setView}
             addNotification={addNotification}
