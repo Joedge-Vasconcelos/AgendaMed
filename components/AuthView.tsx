@@ -12,42 +12,48 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
-  const demoAccounts = {
-    PHYSICIAN: {
+  const demoPersonas = {
+    arlindo: {
       name: 'Dr. Arlindo Jr.',
       email: 'arlindo@acheimed.com.br',
       role: 'PHYSICIAN' as UserRole,
       avatar: 'https://i.pravatar.cc/150?u=arlindo'
     },
-    PATIENT: {
+    thiago: {
       name: 'Thiago Amazon',
       email: 'thiago@paciente.com.br',
       role: 'PATIENT' as UserRole,
       avatar: 'https://i.pravatar.cc/150?u=thiago'
+    },
+    samara: {
+      name: 'Dra. Samara Lima',
+      email: 'samara@acheimed.com.br',
+      role: 'PHYSICIAN' as UserRole,
+      avatar: 'https://i.pravatar.cc/150?u=samara'
     }
   };
 
-  const handleDemoLogin = (type: 'PHYSICIAN' | 'PATIENT') => {
+  const handlePasswordlessLogin = (personaKey: keyof typeof demoPersonas) => {
     setIsLoading(true);
     setTimeout(() => {
-      const demo = demoAccounts[type];
+      const persona = demoPersonas[personaKey];
       onAuthSuccess({
-        id: Math.random().toString(36).substr(2, 9),
-        ...demo
+        id: personaKey,
+        ...persona
       });
       setIsLoading(false);
-    }, 1000);
+    }, 800);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
+    // Simulate real login
     setTimeout(() => {
       const mockUser: User = {
         id: Math.random().toString(36).substr(2, 9),
-        name: formData.name || (role === 'PHYSICIAN' ? 'Dr. Arlindo Jr.' : 'Thiago Amazon'),
+        name: formData.name || (role === 'PHYSICIAN' ? 'Dr. Arlindo Jr.' : 'Paciente Manaus'),
         email: formData.email,
         role: role,
         avatar: undefined
@@ -69,7 +75,7 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             AM
           </div>
           <h1 className="text-4xl font-display font-bold text-slate-900 tracking-tight">Achei Med</h1>
-          <p className="text-slate-500 font-medium mt-2">Manaus: Gestão Inteligente em Saúde</p>
+          <p className="text-slate-500 font-medium mt-2">Manaus: Central de Inteligência Médica</p>
         </div>
 
         <div className="flex p-1.5 bg-slate-100 rounded-2xl mb-8">
@@ -105,7 +111,7 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
               type="email" 
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              placeholder="exemplo@manaus.com"
+              placeholder="exemplo@manaus.com.br"
               className="w-full bg-white/50 border border-slate-100 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-aqua/20 transition-all outline-none"
             />
           </div>
@@ -129,24 +135,24 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             disabled={isLoading}
             className="w-full neo-gradient py-4 rounded-2xl font-bold text-white shadow-xl shadow-babyBlue/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
           >
-            {isLoading ? <div className="loader !border-white !border-t-transparent"></div> : (isLogin ? 'Entrar no Hub' : 'Criar Conta')}
+            {isLoading ? <div className="loader !border-white !border-t-transparent"></div> : (isLogin ? 'Acessar Plataforma' : 'Criar Conta')}
           </button>
         </form>
 
         <div className="mt-8 pt-8 border-t border-slate-100">
-          <p className="text-center text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Acesso Rápido (Ambiente de Teste)</p>
+          <p className="text-center text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Acesso Rápido (Sem Senha)</p>
           <div className="grid grid-cols-2 gap-3">
             <button 
-              onClick={() => handleDemoLogin('PHYSICIAN')}
-              className="py-3 px-4 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg"
+              onClick={() => handlePasswordlessLogin('arlindo')}
+              className="py-3 px-4 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
             >
-              Sou Médico (Manaus)
+              <span>Médico (Dr. Arlindo)</span>
             </button>
             <button 
-              onClick={() => handleDemoLogin('PATIENT')}
-              className="py-3 px-4 rounded-xl border border-slate-200 text-slate-600 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
+              onClick={() => handlePasswordlessLogin('thiago')}
+              className="py-3 px-4 rounded-xl border border-slate-200 text-slate-600 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
             >
-              Sou Paciente (Manaus)
+              <span>Paciente (Thiago)</span>
             </button>
           </div>
         </div>
@@ -156,7 +162,7 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             onClick={() => setIsLogin(!isLogin)}
             className="text-[11px] font-black uppercase text-slate-400 hover:text-deepAqua tracking-widest transition-colors"
           >
-            {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já possui conta? Faça Login'}
+            {isLogin ? 'Não tem uma conta? Solicite Acesso' : 'Já possui conta? Faça Login'}
           </button>
         </div>
       </div>

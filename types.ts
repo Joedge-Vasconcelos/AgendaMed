@@ -47,19 +47,17 @@ export interface Appointment {
   status: string;
 }
 
-// Fixed mock physicians with IDs expected by DashboardView
-export const MOCK_PHYSICIANS: Physician[] = [
-  { id: 'phy1', name: 'Dr. Arlindo Jr.', specialty: 'Cardiologia', city: 'Manaus', plans: ['Unimed', 'Particular'], avatar: 'https://i.pravatar.cc/150?u=arlindo' },
-  { id: 'phy2', name: 'Dra. Samara Lima', specialty: 'Dermatologia', city: 'Manaus', plans: ['Bradesco', 'Particular'], avatar: 'https://i.pravatar.cc/150?u=samara' },
-  { id: 'phy3', name: 'Dr. Victor Quantum', specialty: 'Neurologia', city: 'São Paulo', plans: ['Amil'], avatar: 'https://i.pravatar.cc/150?u=victor' }
+export const MOCK_PHYSICIANS_MANAUS: Physician[] = [
+  { id: 'm1', name: 'Dr. Arlindo Jr.', specialty: 'Cardiologia', city: 'Manaus', plans: ['Unimed', 'Particular'], avatar: 'https://i.pravatar.cc/150?u=arlindo' },
+  { id: 'm2', name: 'Dra. Samara Lima', specialty: 'Dermatologia', city: 'Manaus', plans: ['Bradesco', 'Particular'], avatar: 'https://i.pravatar.cc/150?u=samara' },
+  { id: 'm3', name: 'Dr. Victor Quantum', specialty: 'Neurologia', city: 'São Paulo', plans: ['Amil'], avatar: 'https://i.pravatar.cc/150?u=victor' }
 ];
 
-export const MOCK_PHYSICIANS_MANAUS: Physician[] = MOCK_PHYSICIANS;
+export const MOCK_PHYSICIANS = MOCK_PHYSICIANS_MANAUS;
 
-// Added missing mock appointments for dashboard views
 export const MOCK_APPOINTMENTS: Appointment[] = [
-  { id: '1', physicianId: 'phy1', patientName: 'Ana Silva', email: 'ana@example.com', whatsapp: '92988887777', time: '09:00', status: 'pending' },
-  { id: '2', physicianId: 'phy1', patientName: 'Bruno Costa', email: 'bruno@example.com', whatsapp: '92988886666', time: '10:30', status: 'confirmed' }
+  { id: '1', physicianId: 'm1', patientName: 'Maria Solimões', email: 'maria@paciente.com.br', whatsapp: '92988887777', time: '09:00', status: 'pending' },
+  { id: '2', physicianId: 'm1', patientName: 'Thiago Amazon', email: 'thiago@paciente.com.br', whatsapp: '92988886666', time: '10:30', status: 'confirmed' }
 ];
 
 export const MOCK_DATA = {
