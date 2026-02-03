@@ -1,0 +1,7 @@
+{
+  "name": "Achei Med Intelligent Hub",
+  "description": "Plataforma futurista de gestão médica com realocação inteligente e lista de espera.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
